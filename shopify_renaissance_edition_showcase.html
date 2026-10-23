@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Renaissance Edition | Next-Gen Commerce & Intelligence</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        cinzel: ['"Cinzel"', 'serif'],
+                    },
+                    colors: {
+                        renaissance: {
+                            gold: '#E2C085',
+                            bronze: '#B8860B',
+                            dark: '#0A090D',
+                            card: '#13111C',
+                            border: '#282338',
+                            crimson: '#8B0000',
+                            glow: '#7C3AED'
+                        }
+                    },
+                    animation: {
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-medium': 'float 5s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 25s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-18px) rotate(1.5deg)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: 0.4, transform: 'scale(1)' },
+                            '50%': { opacity: 0.8, transform: 'scale(1.08)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar & WebGL Canvas overlay styles */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A090D;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A2536;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3E3752;
+        }
+
+        .glass-panel {
+            background: rgba(19, 17, 28, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 192, 133, 0.12);
+        }
+
+        .glass-panel-gold {
+            background: rgba(226, 192, 133, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 192, 133, 0.25);
+        }
+
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #FFF 0%, #E2C085 50%, #B8860B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-cosmic {
+            background: linear-gradient(135deg, #FFFFFF 0%, #A855F7 50%, #3B82F6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-art-bg {
+            background-image: radial-gradient(circle at 50% 30%, rgba(124, 58, 237, 0.15), transparent 70%),
+                              radial-gradient(circle at 20% 70%, rgba(226, 192, 133, 0.08), transparent 50%);
+        }
+
+        /* Perspective and 3D transforms */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+        }
+        
+        .hardware-card {
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s ease;
+        }
+        
+        .hardware-card:hover {
+            transform: translateY(-10px) rotateX(4deg) rotateY(-2deg) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(124, 58, 237, 0.25);
+        }
+
+        /* Custom Spotlight Cursor Glow */
+        #cursor-blur {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, rgba(226, 192, 133, 0.03) 40%, transparent 70%);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+            z-index: 99;
+        }
+
+        .noise-bg {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-renaissance-dark text-slate-100 font-sans antialiased selection:bg-renaissance-gold selection:text-black overflow-x-hidden noise-bg">
+
+    <!-- Interactive Ambient Light Follower -->
+    <div id="cursor-blur" class="hidden md:block"></div>
+
+    <!-- Sticky Navigation Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-4 sm:px-8" id="navbar">
+        <div class="max-w-7xl mx-auto glass-panel rounded-full px-6 py-3 flex items-center justify-between shadow-2xl">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-600 to-purple-600 p-[1px] flex items-center justify-center shadow-lg shadow-purple-900/30">
+                    <div class="w-full h-full bg-renaissance-dark rounded-full flex items-center justify-center">
+                        <i class="fa-solid font-cinzel text-renaissance-gold font-bold text-lg">R</i>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-cinzel tracking-widest text-sm font-bold text-gradient-gold block">RENAISSANCE</span>
+                    <span class="text-[10px] text-slate-400 tracking-wider font-mono -mt-1 block">WINTER EDITION 2026</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-xs font-medium tracking-wider uppercase text-slate-300">
+                <a href="#hero" class="hover:text-renaissance-gold transition-colors">Editions</a>
+                <a href="#hardware" class="hover:text-renaissance-gold transition-colors">Retail POS</a>
+                <a href="#intelligence" class="hover:text-renaissance-gold transition-colors">AI Layer</a>
+                <a href="#finance" class="hover:text-renaissance-gold transition-colors">Finance</a>
+                <a href="#showcase" class="hover:text-renaissance-gold transition-colors font-cinzel text-renaissance-gold">Workflows</a>
+            </nav>
+
+            <!-- CTA Buttons -->
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleAudio()" id="audioBtn" class="p-2.5 rounded-full glass-panel hover:border-renaissance-gold/50 text-slate-300 text-xs transition-all" title="Toggle Ambient Audio Experience">
+                    <i class="fa-solid fa-volume-xmark" id="audioIcon"></i>
+                </button>
+                <a href="#intelligence" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-renaissance-gold via-amber-500 to-amber-700 text-slate-950 font-semibold text-xs tracking-wide shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:scale-105 transition-all duration-300">
+                    Explore 150+ Updates
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="relative z-10">
+
+        <!-- SECTION 1: HERO - Classical Renaissance Meets Tech Art -->
+        <section id="hero" class="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden hero-art-bg">
+            
+            <!-- Parallax Classical Floating Paintings/Artworks -->
+            <div class="absolute inset-0 pointer-events-none overflow-hidden" id="hero-parallax-container">
+                
+                <!-- Floating Left Angel/Classical Figure -->
+                <div class="absolute -left-10 top-1/4 w-64 md:w-96 rounded-2xl overflow-hidden shadow-2xl border border-amber-500/20 transition-transform duration-75 ease-out opacity-80 md:opacity-100 animate-float-slow" data-speed="-0.08" id="art-left">
+                    <div class="relative group">
+                        <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80" alt="Classical Renaissance Painting" class="w-full h-auto object-cover filter contrast-125 brightness-90 saturate-90">
+                        <div class="absolute inset-0 bg-gradient-to-t from-renaissance-dark via-transparent to-transparent"></div>
+                        <!-- Tech Overlay Badge on Art -->
+                        <div class="absolute bottom-4 left-4 right-4 p-3 rounded-xl glass-panel border border-white/10 flex items-center space-x-3">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            <div>
+                                <p class="text-[10px] text-slate-400 uppercase font-mono">Neural Engine Active</p>
+                                <p class="text-xs font-semibold text-amber-200">Genesis Pipeline v4.8</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floating Skateboarder/Youth Art Integration -->
+                <div class="absolute -right-8 top-1/3 w-60 md:w-88 rounded-2xl overflow-hidden shadow-2xl border border-purple-500/20 transition-transform duration-75 ease-out opacity-80 md:opacity-100 animate-float-medium" data-speed="0.06" id="art-right">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?auto=format&fit=crop&w=800&q=80" alt="Renaissance Fresco Art" class="w-full h-auto object-cover filter contrast-110 brightness-95">
+                        <div class="absolute inset-0 bg-gradient-to-t from-renaissance-dark via-transparent to-transparent"></div>
+                        <!-- Floating Skateboard/Product Badge Overlay -->
+                        <div class="absolute bottom-4 left-4 right-4 p-3 rounded-xl glass-panel border border-amber-400/30 flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-bolt text-amber-400 text-xs"></i>
+                                <span class="text-xs font-medium text-slate-200">Sidekick AI Bot</span>
+                            </div>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-900/60 text-purple-300 border border-purple-500/30">Auto-pilot</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ambient Glow Orbs -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-900/20 rounded-full blur-[120px] pointer-events-none animate-pulse-glow"></div>
+                <div class="absolute top-1/3 left-1/3 w-[350px] h-[350px] bg-amber-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+            </div>
+
+            <!-- Central Editorial Content -->
+            <div class="relative z-20 max-w-5xl mx-auto px-4 text-center">
+                <!-- Top Renaissance Badge -->
+                <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full glass-panel-gold border border-amber-500/30 mb-8 transform hover:scale-105 transition-transform cursor-pointer">
+                    <i class="fa-solid fa-crown text-amber-400 text-xs"></i>
+                    <span class="text-xs uppercase font-mono tracking-widest text-amber-300">Winter Edition Release</span>
+                    <span class="text-slate-500">|</span>
+                    <span class="text-xs font-semibold text-slate-300">150+ New Building Blocks</span>
+                </div>
+
+                <!-- Main Display Typography -->
+                <h1 class="font-cinzel text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight leading-none mb-6">
+                    <span class="block text-slate-100">The</span>
+                    <span class="block text-gradient-gold my-1 italic font-serif">Renaissance</span>
+                    <span class="block text-slate-100">Edition</span>
+                </h1>
+
+                <!-- Subtitle Description -->
+                <p class="max-w-2xl mx-auto text-base sm:text-lg text-slate-300 font-light leading-relaxed mb-10">
+                    A masterpiece of commerce engineering. Harnessing generative AI shaders, ultra-low latency hardware hubs, and dynamic unified global finance tools.
+                </p>
+
+                <!-- Hero Interactive Action Bar -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
+                    <a href="#hardware" class="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-renaissance-gold via-amber-500 to-amber-600 text-slate-950 font-bold text-sm tracking-wide shadow-xl shadow-amber-500/25 hover:shadow-amber-500/40 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center space-x-2">
+                        <span>Explore Hardware & AI</span>
+                        <i class="fa-solid fa-arrow-down text-xs"></i>
+                    </a>
+                    
+                    <button onclick="copyPromptCode()" class="w-full sm:w-auto px-6 py-4 rounded-full glass-panel border border-slate-700/80 hover:border-amber-400/50 text-slate-200 font-medium text-sm flex items-center justify-center space-x-2 hover:bg-slate-800/50 transition-all">
+                        <i class="fa-solid fa-terminal text-amber-400 text-xs"></i>
+                        <span>Copy Prompt</span>
+                        <span id="copy-badge" class="ml-2 text-[10px] bg-slate-800 text-amber-300 px-2 py-0.5 rounded font-mono">v3.8</span>
+                    </button>
+                </div>
+
+                <!-- Floating Feature Tickers -->
+                <div class="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left max-w-4xl mx-auto">
+                    <div class="p-4 rounded-2xl glass-panel border-white/5 hover:border-amber-500/20 transition-all">
+                        <div class="text-amber-400 text-lg font-bold font-mono mb-1">01. Sidekick</div>
+                        <p class="text-xs text-slate-400">Context-aware conversational merchant copilot</p>
+                    </div>
+                    <div class="p-4 rounded-2xl glass-panel border-white/5 hover:border-amber-500/20 transition-all">
+                        <div class="text-purple-400 text-lg font-bold font-mono mb-1">02. Retail Hub</div>
+                        <p class="text-xs text-slate-400">Ultra-reliable wired POS ethernet hardware</p>
+                    </div>
+                    <div class="p-4 rounded-2xl glass-panel border-white/5 hover:border-amber-500/20 transition-all">
+                        <div class="text-amber-400 text-lg font-bold font-mono mb-1">03. B2B Apps</div>
+                        <p class="text-xs text-slate-400">Custom draft quotes & volume discounts</p>
+                    </div>
+                    <div class="p-4 rounded-2xl glass-panel border-white/5 hover:border-amber-500/20 transition-all">
+                        <div class="text-purple-400 text-lg font-bold font-mono mb-1">04. Global Pay</div>
+                        <p class="text-xs text-slate-400">Unified dynamic limits & automated tax credit</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-center pointer-events-none">
+                <div class="w-6 h-10 rounded-full border-2 border-slate-600 flex justify-center p-1 mx-auto mb-2">
+                    <div class="w-1.5 h-3 bg-amber-400 rounded-full animate-bounce"></div>
+                </div>
+                <span class="text-[10px] font-mono uppercase tracking-widest text-slate-400">Scroll to Experience</span>
+            </div>
+        </section>
+
+        <!-- SECTION 2: RETAIL HARDWARE SHOWCASE (3D TILT & PERSPECTIVE INTERACTION) -->
+        <section id="hardware" class="py-28 px-4 relative bg-slate-950/80 border-t border-b border-amber-500/10 overflow-hidden">
+            <!-- Section Decorative Background Artwork -->
+            <div class="absolute inset-0 pointer-events-none opacity-10 flex items-center justify-center">
+                <i class="fa-solid fa-shield-halved text-[500px] text-amber-500"></i>
+            </div>
+
+            <div class="max-w-7xl mx-auto relative z-10">
+                <!-- Section Header -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                    <div>
+                        <div class="inline-flex items-center space-x-2 text-amber-400 font-mono text-xs uppercase tracking-widest mb-3">
+                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                            <span>Hardware Engineering</span>
+                        </div>
+                        <h2 class="font-cinzel text-4xl sm:text-6xl font-extrabold text-slate-100">
+                            Retail <span class="text-gradient-gold italic font-serif">Re-imagined.</span>
+                        </h2>
+                    </div>
+                    <p class="max-w-md text-sm text-slate-400 font-light">
+                        New in-store hardware that provides unwavering reliability with ethernet processing power built for high-throughput environments.
+                    </p>
+                </div>
+
+                <!-- 3D Perspective POS Hub Showcase -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    
+                    <!-- Main 3D Card Display -->
+                    <div class="lg:col-span-7 perspective-1000">
+                        <div class="hardware-card preserve-3d p-8 rounded-3xl glass-panel border border-amber-500/20 relative overflow-hidden group">
+                            
+                            <!-- Ambient Light Sheen -->
+                            <div class="absolute -right-20 -top-20 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all duration-700"></div>
+                            
+                            <!-- Header Info -->
+                            <div class="flex items-center justify-between mb-8">
+                                <span class="px-3 py-1 rounded-full text-xs font-mono bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                                    POS Hub Station Pro
+                                </span>
+                                <span class="text-xs text-slate-400 font-mono">1Gbps Power over Ethernet</span>
+                            </div>
+
+                            <!-- Hardware Mockup / Canvas Simulation -->
+                            <div class="relative py-12 flex flex-col items-center justify-center">
+                                
+                                <!-- Floating POS Hub Device Simulation -->
+                                <div id="pos-hub-device" class="w-72 sm:w-96 h-56 rounded-2xl bg-gradient-to-tr from-slate-900 via-slate-800 to-slate-950 border-2 border-slate-700 shadow-2xl relative flex flex-col justify-between p-6 transform transition-all duration-500 group-hover:scale-105">
+                                    
+                                    <!-- Device Screen Simulation -->
+                                    <div class="w-full h-28 bg-slate-950 rounded-xl p-3 border border-slate-800 flex flex-col justify-between relative overflow-hidden">
+                                        <!-- Top Status -->
+                                        <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono">
+                                            <span class="text-emerald-400"><i class="fa-solid fa-wifi mr-1"></i> Connected</span>
+                                            <span>Shopify POS v14.2</span>
+                                        </div>
+                                        <!-- Live Transaction Graphic -->
+                                        <div class="flex items-end justify-between">
+                                            <div>
+                                                <p class="text-[10px] text-slate-500 uppercase">Current Session</p>
+                                                <p class="text-lg font-mono font-bold text-amber-300">$2,480.50</p>
+                                            </div>
+                                            <div class="px-2 py-1 rounded bg-purple-900/40 border border-purple-500/30 text-[10px] text-purple-300 font-mono">
+                                                Tap To Pay
+                                            </div>
+                                        </div>
+                                        <!-- Screen Glow Effect -->
+                                        <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 w-32 h-12 bg-amber-400/20 rounded-full blur-md"></div>
+                                    </div>
+
+                                    <!-- Bottom Ethernet Cable / Ports Section -->
+                                    <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                                        <div class="flex space-x-2">
+                                            <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                                            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                                            <span class="w-3 h-3 rounded-full bg-slate-700"></span>
+                                        </div>
+                                        <span class="text-[10px] font-mono text-slate-500">4x USB-C | RJ45 Ethernet</span>
+                                    </div>
+                                </div>
+
+                                <!-- Floating Classical Background Element behind hardware -->
+                                <div class="absolute -top-4 right-4 w-28 h-28 rounded-full border border-amber-500/20 overflow-hidden opacity-30 pointer-events-none">
+                                    <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=300&q=80" class="w-full h-full object-cover">
+                                </div>
+                            </div>
+
+                            <!-- Specs Grid -->
+                            <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800 text-center">
+                                <div>
+                                    <p class="text-xs text-slate-400 uppercase font-mono">Latency</p>
+                                    <p class="text-base font-bold text-slate-200 font-mono">&lt; 12ms</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-400 uppercase font-mono">Uptime</p>
+                                    <p class="text-base font-bold text-amber-400 font-mono">99.99%</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-400 uppercase font-mono">Security</p>
+                                    <p class="text-base font-bold text-purple-400 font-mono">PCI DSS 4.0</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Right Specs Cards Stack -->
+                    <div class="lg:col-span-5 space-y-6">
+                        
+                        <!-- Feature Item 1 -->
+                        <div class="p-6 rounded-2xl glass-panel border border-slate-800 hover:border-amber-500/40 transition-all cursor-pointer group">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xl group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-network-wired"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-100 group-hover:text-amber-300 transition-colors">Not Your Standard Hub</h3>
+                                    <p class="text-xs text-slate-400 leading-relaxed mt-1">
+                                        Gives you the rock-solid reliability of wired connections combined with processing power that never drops transactions during flash sales.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feature Item 2 -->
+                        <div class="p-6 rounded-2xl glass-panel border border-slate-800 hover:border-purple-500/40 transition-all cursor-pointer group">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-microchip"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-100 group-hover:text-purple-300 transition-colors">Unified Processing Core</h3>
+                                    <p class="text-xs text-slate-400 leading-relaxed mt-1">
+                                        Seamlessly routes payment tokens between offline physical hardware and online Shopify checkout pipelines in real-time.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feature Item 3 -->
+                        <div class="p-6 rounded-2xl glass-panel border border-slate-800 hover:border-amber-500/40 transition-all cursor-pointer group">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-barcode"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-100 group-hover:text-emerald-300 transition-colors">Multi-Location Sync</h3>
+                                    <p class="text-xs text-slate-400 leading-relaxed mt-1">
+                                        Auto-sync inventory across thousands of retail outlets with millisecond precise barcode scanning integration.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: ANIMATED SHADER HERO / INTELLIGENCE LAYER (COSMIC BLACK HOLE CANVAS) -->
+        <section id="intelligence" class="py-32 px-4 relative min-h-screen flex items-center justify-center bg-black overflow-hidden">
+            
+            <!-- Dynamic Canvas Shader Background Effect -->
+            <canvas id="shaderCanvas" class="absolute inset-0 w-full h-full object-cover pointer-events-auto cursor-crosshair opacity-80"></canvas>
+
+            <!-- Radial Dark Gradient Overlay to frame the content -->
+            <div class="absolute inset-0 bg-radial-gradient from-transparent via-black/60 to-black pointer-events-none"></div>
+
+            <div class="relative z-20 max-w-5xl mx-auto text-center px-4">
+                
+                <!-- Tag -->
+                <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-purple-950/60 border border-purple-500/40 text-purple-300 text-xs font-mono uppercase tracking-widest mb-6 backdrop-blur-md">
+                    <i class="fa-solid fa-atom animate-spin-slow"></i>
+                    <span>Generative Intelligence Portal</span>
+                </div>
+
+                <!-- Cosmic Headline -->
+                <h2 class="font-cinzel text-5xl sm:text-7xl lg:text-8xl font-black text-slate-100 tracking-tight leading-none mb-6">
+                    Launch Your <br>
+                    <span class="text-gradient-cosmic italic font-serif">Workflow</span> Into Orbit
+                </h2>
+
+                <p class="max-w-2xl mx-auto text-base sm:text-xl text-slate-300 font-light leading-relaxed mb-10">
+                    The Next Layer of Intelligence. Supercharge enterprise productivity with autonomous AI agents, built for high-scale global commerce.
+                </p>
+
+                <!-- Interactive Shader Controls & CTA Bar -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-lg mx-auto">
+                    <button onclick="triggerPortalWarp()" class="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white font-bold text-sm tracking-wide shadow-xl shadow-purple-600/30 hover:shadow-purple-600/50 hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>Warp Accretion Speed</span>
+                    </button>
+
+                    <button onclick="changeShaderColor()" class="w-full sm:w-auto px-6 py-4 rounded-full glass-panel border border-purple-500/30 text-purple-200 font-medium text-sm hover:bg-purple-900/30 transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-palette text-xs"></i>
+                        <span>Shift Spectrum</span>
+                    </button>
+                </div>
+
+                <!-- Interactive AI Chat Prompt Simulation Box -->
+                <div class="mt-16 max-w-2xl mx-auto glass-panel p-6 rounded-3xl border border-purple-500/30 text-left shadow-2xl relative overflow-hidden">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-800 text-xs font-mono text-slate-400">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+                            <span class="ml-2 text-purple-300">Sidekick AI Agent Terminal v4.0</span>
+                        </div>
+                        <span class="text-emerald-400"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Ready</span>
+                    </div>
+
+                    <div class="py-4 font-mono text-xs sm:text-sm space-y-3">
+                        <div class="text-slate-400">
+                            <span class="text-purple-400 font-bold">&gt; Query:</span> "Optimize international tax levies for EU shipments and auto-translate store design to French & German."
+                        </div>
+                        <div class="text-amber-200 bg-amber-950/30 p-3 rounded-xl border border-amber-500/20 leading-relaxed" id="ai-response-text">
+                            <i class="fa-solid fa-circle-notch animate-spin text-amber-400 mr-2"></i> Analyzing cross-border tariffs... Configured 27 tax jurisdictions and generated localized Liquid themes in 1.4s.
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex items-center justify-between">
+                        <span class="text-[10px] text-slate-500 font-mono">Press Ctrl + K to summon prompt bar</span>
+                        <button onclick="simulateAIQuery()" class="px-3 py-1 rounded bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 text-xs font-mono transition-colors">
+                            Re-run Query
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 4: GLOBAL FINANCE & B2B SUITE -->
+        <section id="finance" class="py-28 px-4 relative bg-renaissance-dark border-t border-slate-800">
+            <div class="max-w-7xl mx-auto">
+                
+                <div class="text-center max-w-3xl mx-auto mb-20">
+                    <span class="text-amber-400 font-mono text-xs uppercase tracking-widest block mb-2">Capital & Finance Architecture</span>
+                    <h2 class="font-cinzel text-4xl sm:text-6xl font-bold text-slate-100">
+                        Modern <span class="text-gradient-gold italic font-serif">Finance</span> For Global Scale
+                    </h2>
+                    <p class="text-slate-400 text-sm mt-4">
+                        Modern financial tools designed for growing your business and securing enterprise liquidity.
+                    </p>
+                </div>
+
+                <!-- Interactive Feature Matrix Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- Finance Card 1 -->
+                    <div class="p-8 rounded-3xl glass-panel border border-amber-500/20 hover:border-amber-400/50 transition-all duration-300 relative group">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-vault"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-100 mb-3">Shopify Capital & Credit</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-6">
+                            Access working capital in European & North American currencies with flexible payback rates tied directly to store revenue.
+                        </p>
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-amber-300">
+                            <span>Dynamic Credit Limits</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Finance Card 2 -->
+                    <div class="p-8 rounded-3xl glass-panel border border-purple-500/20 hover:border-purple-400/50 transition-all duration-300 relative group">
+                        <div class="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-coins"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-100 mb-3">Credits on USDC</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-6">
+                            Earn instant yield rewards on stablecoin balance deposits with zero-fee same-day ACH and wire clearing.
+                        </p>
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-purple-300">
+                            <span>Same-Day Settlement</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Finance Card 3 -->
+                    <div class="p-8 rounded-3xl glass-panel border border-emerald-500/20 hover:border-emerald-400/50 transition-all duration-300 relative group">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-shield-cat"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-100 mb-3">Unified Dispute Shield</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-6">
+                            Automated AI chargeback defense that gathers proof logs and submits dispute evidence directly to card issuers.
+                        </p>
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-emerald-300">
+                            <span>Real-Time Fraud Alerts</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 5: HORIZONTAL / PERSPECTIVE GALLERY ("YOUR WORK, FRONT AND CENTRE") -->
+        <section id="showcase" class="py-28 px-4 bg-slate-950 overflow-hidden relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
+                    <div>
+                        <span class="text-purple-400 font-mono text-xs uppercase tracking-widest block mb-2">Showcase & Gallery</span>
+                        <h2 class="font-cinzel text-4xl sm:text-6xl font-bold text-slate-100">
+                            Your Work. <span class="text-gradient-cosmic italic font-serif">Front & Centre.</span>
+                        </h2>
+                    </div>
+                    <p class="text-xs text-slate-400 font-mono mt-4 md:mt-0">
+                        [ Drag or Scroll Horizontal Cards ]
+                    </p>
+                </div>
+
+                <!-- Horizontal Perspective Gallery Cards Container -->
+                <div class="flex space-x-6 overflow-x-auto pb-8 pt-4 no-scrollbar snap-x cursor-grab active:cursor-grabbing" id="galleryContainer">
+                    
+                    <!-- Gallery Card 1 -->
+                    <div class="min-w-[280px] sm:min-w-[360px] h-[480px] rounded-3xl glass-panel p-6 border border-amber-500/20 snap-center flex flex-col justify-between group transform hover:-translate-y-3 transition-all duration-300">
+                        <div class="relative h-64 rounded-2xl overflow-hidden mb-4">
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" alt="Editorial Fashion Showcase" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-mono bg-black/60 text-amber-300 backdrop-blur-md">Haute Couture</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-100">Aethelgard Atelier</h3>
+                            <p class="text-xs text-slate-400 mt-1">High-fashion luxury catalog powered by 3D WebGL product previews.</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-amber-400 font-mono">
+                            <span>View Live Store</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Card 2 -->
+                    <div class="min-w-[280px] sm:min-w-[360px] h-[480px] rounded-3xl glass-panel p-6 border border-purple-500/20 snap-center flex flex-col justify-between group transform hover:-translate-y-3 transition-all duration-300">
+                        <div class="relative h-64 rounded-2xl overflow-hidden mb-4">
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" alt="Hardware Audio" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-mono bg-black/60 text-purple-300 backdrop-blur-md">Acoustics</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-100">Solitude Audio Co.</h3>
+                            <p class="text-xs text-slate-400 mt-1">Spatial audio hardware flagship store with real-time customizer.</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-purple-400 font-mono">
+                            <span>View Live Store</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Card 3 -->
+                    <div class="min-w-[280px] sm:min-w-[360px] h-[480px] rounded-3xl glass-panel p-6 border border-emerald-500/20 snap-center flex flex-col justify-between group transform hover:-translate-y-3 transition-all duration-300">
+                        <div class="relative h-64 rounded-2xl overflow-hidden mb-4">
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80" alt="Timepieces" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-mono bg-black/60 text-emerald-300 backdrop-blur-md">Horology</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-100">Chronos Geneva</h3>
+                            <p class="text-xs text-slate-400 mt-1">Swiss watchmaker direct-to-consumer store with global crypto vault checkout.</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-emerald-400 font-mono">
+                            <span>View Live Store</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Card 4 -->
+                    <div class="min-w-[280px] sm:min-w-[360px] h-[480px] rounded-3xl glass-panel p-6 border border-amber-500/20 snap-center flex flex-col justify-between group transform hover:-translate-y-3 transition-all duration-300">
+                        <div class="relative h-64 rounded-2xl overflow-hidden mb-4">
+                            <img src="https://images.unsplash.com/photo-1511556532299-8f662fc26c06?auto=format&fit=crop&w=600&q=80" alt="Skate Hardware" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-mono bg-black/60 text-amber-300 backdrop-blur-md">Streetwear</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-100">Wilderness Decks</h3>
+                            <p class="text-xs text-slate-400 mt-1">Artisan skateboard decks & apparel drops with instant POS synchronization.</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-amber-400 font-mono">
+                            <span>View Live Store</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER CTA -->
+        <footer class="py-16 px-4 bg-black border-t border-slate-800 text-center relative">
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="font-cinzel text-2xl font-bold text-gradient-gold">
+                    RENAISSANCE EDITION 2026
+                </div>
+                <p class="text-xs text-slate-500 font-mono">
+                    Crafted with 21st Dev & MotionSites WebGL / Canvas Particle Architecture
+                </p>
+                <div class="flex justify-center space-x-6 text-slate-400 text-sm">
+                    <a href="#" class="hover:text-amber-400 transition-colors"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="hover:text-amber-400 transition-colors"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" class="hover:text-amber-400 transition-colors"><i class="fa-brands fa-discord"></i></a>
+                </div>
+                <p class="text-[10px] text-slate-600 uppercase font-mono">
+                    &copy; 2026 Shopify Winter Edition. Inspired by 21st Dev Web Components.
+                </p>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- Notification Toast Element -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 glass-panel border border-amber-500/40 text-amber-300 px-5 py-3 rounded-2xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 flex items-center space-x-3 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-amber-400"></i>
+        <span id="toast-message" class="text-xs font-mono">Prompt Copied to Clipboard!</span>
+    </div>
+
+    <!-- JAVASCRIPT ANIMATIONS & CANVAS SHADER SCRIPT -->
+    <script>
+        /* --------------------------------------------------
+         * 1. PARALLAX & CURSOR SPOTLIGHT EFFECTS
+         * -------------------------------------------------- */
+        const cursorBlur = document.getElementById('cursor-blur');
+        
+        window.addEventListener('mousemove', (e) => {
+            if (cursorBlur) {
+                cursorBlur.style.left = e.clientX + 'px';
+                cursorBlur.style.top = e.clientY + 'px';
+            }
+        });
+
+        // Parallax scroll on Renaissance Art elements
+        const artLeft = document.getElementById('art-left');
+        const artRight = document.getElementById('art-right');
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            if (artLeft) {
+                const speedLeft = parseFloat(artLeft.getAttribute('data-speed')) || -0.05;
+                artLeft.style.transform = `translateY(${scrolled * speedLeft}px) rotate(${-scrolled * 0.01}deg)`;
+            }
+            if (artRight) {
+                const speedRight = parseFloat(artRight.getAttribute('data-speed')) || 0.05;
+                artRight.style.transform = `translateY(${scrolled * speedRight}px) rotate(${scrolled * 0.01}deg)`;
+            }
+
+            // Navbar backdrop shift
+            const nav = document.getElementById('navbar');
+            if (scrolled > 50) {
+                nav.classList.add('py-2');
+                nav.classList.remove('py-4');
+            } else {
+                nav.classList.add('py-4');
+                nav.classList.remove('py-2');
+            }
+        });
+
+        /* --------------------------------------------------
+         * 2. BLACK HOLE / COSMIC SHADER CANVAS (ACCRETION DISK)
+         * -------------------------------------------------- */
+        const canvas = document.getElementById('shaderCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height, cx, cy;
+        let particles = [];
+        let numParticles = 350;
+        let warpSpeed = 1;
+        let hueOffset = 270; // Cosmic Purple/Indigo default
+
+        function resizeCanvas() {
+            width = canvas.width = canvas.parentElement.clientWidth;
+            height = canvas.height = canvas.parentElement.clientHeight;
+            cx = width / 2;
+            cy = height / 2;
+        }
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.angle = Math.random() * Math.PI * 2;
+                this.radius = Math.random() * (Math.min(width, height) * 0.45) + 60;
+                this.speed = (0.002 + Math.random() * 0.005) * (300 / this.radius);
+                this.size = Math.random() * 2.5 + 0.5;
+                this.colorHue = hueOffset + Math.random() * 40;
+                this.alpha = Math.random() * 0.8 + 0.2;
+            }
+
+            update() {
+                this.angle += this.speed * warpSpeed;
+                // Gravitational pull inward towards black hole core
+                this.radius -= 0.15 * warpSpeed;
+
+                if (this.radius < 30) {
+                    this.reset();
+                    this.radius = Math.min(width, height) * 0.45;
+                }
+            }
+
+            draw() {
+                // Perspective tilt simulation (ellipse)
+                const x = cx + Math.cos(this.angle) * this.radius;
+                const y = cy + Math.sin(this.angle) * (this.radius * 0.4);
+
+                ctx.beginPath();
+                ctx.arc(x, y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${this.colorHue}, 80%, 65%, ${this.alpha})`;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = `hsl(${this.colorHue}, 90%, 50%)`;
+                ctx.fill();
+            }
+        }
+
+        function initShader() {
+            resizeCanvas();
+            particles = [];
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateShader() {
+            // Trail effect background
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.fillRect(0, 0, width, height);
+
+            // Draw Central Black Hole Event Horizon Core
+            const coreRadius = 45;
+            const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, coreRadius * 2.5);
+            grad.addColorStop(0, 'rgba(0, 0, 0, 1)');
+            grad.addColorStop(0.3, 'rgba(10, 5, 20, 1)');
+            grad.addColorStop(0.6, `hsla(${hueOffset}, 90%, 50%, 0.4)`);
+            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, coreRadius * 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // Black Hole Singular Center
+            ctx.beginPath();
+            ctx.arc(cx, cy, coreRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#000000';
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = `hsl(${hueOffset}, 100%, 60%)`;
+            ctx.fill();
+            ctx.shadowBlur = 0; // reset shadow
+
+            // Update & Render Particles
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animateShader);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // Canvas Controls
+        function triggerPortalWarp() {
+            warpSpeed = 4;
+            setTimeout(() => { warpSpeed = 1; }, 2000);
+            showToast("Warp Speed Activated!");
+        }
+
+        function changeShaderColor() {
+            hueOffset = (hueOffset + 60) % 360;
+            particles.forEach(p => p.colorHue = hueOffset + Math.random() * 40);
+            showToast("Chromatic Shader Shifted!");
+        }
+
+        /* --------------------------------------------------
+         * 3. INTERACTIVE SIMULATIONS & UI HELPERS
+         * -------------------------------------------------- */
+        function copyPromptCode() {
+            const promptText = `Create an interactive Renaissance Edition website with 3D tilted POS hub hardware cards, cosmic black hole WebGL canvas shader animations, and sidekick AI assistant prompt integration.`;
+            
+            // Clipboard Copying
+            const tempInput = document.createElement("input");
+            tempInput.value = promptText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            showToast("Prompt copied to clipboard!");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            if (toast && toastMsg) {
+                toastMsg.innerText = msg;
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+
+                setTimeout(() => {
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                }, 3000);
+            }
+        }
+
+        const queries = [
+            "Generating localized tax rules for 120 global currencies... Completed in 0.8s.",
+            "Optimizing Liquid store template code for 99 Lighthouse performance score...",
+            "Deploying POS Hub Ethernet firmware update to 4,500 retail terminals..."
+        ];
+        let queryIdx = 0;
+
+        function simulateAIQuery() {
+            const el = document.getElementById('ai-response-text');
+            if (el) {
+                el.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin text-purple-400 mr-2"></i> Thinking...`;
+                setTimeout(() => {
+                    queryIdx = (queryIdx + 1) % queries.length;
+                    el.innerHTML = `<i class="fa-solid fa-check text-emerald-400 mr-2"></i> ${queries[queryIdx]}`;
+                }, 1000);
+            }
+        }
+
+        // Web Audio Synthesizer for Ambient Sound
+        let audioCtx = null;
+        let isAudioPlaying = false;
+        let oscillator = null;
+
+        function toggleAudio() {
+            const icon = document.getElementById('audioIcon');
+            if (!isAudioPlaying) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(110, audioCtx.currentTime); // Low A ambient drone
+                    gainNode.gain.setValueAtTime(0.02, audioCtx.currentTime);
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    oscillator.start();
+
+                    isAudioPlaying = true;
+                    if (icon) icon.className = "fa-solid fa-volume-high text-amber-400";
+                    showToast("Ambient Audio Enabled");
+                } catch(e) {
+                    console.log("Audio not supported or blocked");
+                }
+            } else {
+                if (oscillator) oscillator.stop();
+                isAudioPlaying = false;
+                if (icon) icon.className = "fa-solid fa-volume-xmark";
+                showToast("Ambient Audio Muted");
+            }
+        }
+
+        // Initialize Shader on load
+        window.onload = function() {
+            initShader();
+            animateShader();
+        }
+    </script>
+</body>
+</html>
